@@ -12,6 +12,7 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -19,13 +20,17 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.myapp.AuthActivity;
+import com.example.myapp.R;
 import com.example.myapp.SessionManager;
+import com.example.myapp.database.DatabaseHelper;
 import com.example.myapp.database.User;
 import com.example.myapp.databinding.FragmentProfileBinding;
 import com.example.myapp.viewmodels.ProfileViewModel;
+import com.example.myapp.viewmodels.UpdateProfileNotificationHelper;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -80,12 +85,26 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         viewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        Button updateButton = rootView.findViewById(R.id.buttonUpdateProfile);
 
-        // Set up profile picture click listener for image selection
-        binding.imageViewProfilePic.setOnClickListener(v -> checkAndRequestPermission());
-        return binding.getRoot();
+        // Set an OnClickListener for the button
+        updateButton.setOnClickListener(v -> {
+            // Call updateProfile method when the button is clicked
+            updateProfile();
+        });
+
+        return rootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Set up the logout button listener
+        binding.btnLogout.setOnClickListener(v -> logout());
     }
 
     private void checkAndRequestPermission() {
@@ -134,16 +153,23 @@ public class ProfileFragment extends Fragment {
         String updatedPassword = Objects.requireNonNull(binding.editTextPassword.getText()).toString().trim();
         String updatedEmail = Objects.requireNonNull(binding.editTextEmail.getText()).toString().trim();
 
-        if (updatedUsername.isEmpty() || updatedEmail.isEmpty()) {
-            Toast.makeText(getContext(), "Fields cannot be empty", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        // Check for empty fields
 
+        // Create the updated user object
         User updatedUser = new User(userId, updatedUsername, updatedEmail, updatedPassword);
         viewModel.updateUserProfile(updatedUser);
 
-        // If a profile picture is selected, you could save it here
+        // Show a notification based on which field was updated
+        // Show notification for username update
+        UpdateProfileNotificationHelper.showProfileUpdateNotification(getContext(), "Username");
+        // Show notification for email update
+        UpdateProfileNotificationHelper.showProfileUpdateNotification(getContext(), "Email");
+        if (!updatedPassword.isEmpty()) {
+            // Show notification for password update
+            UpdateProfileNotificationHelper.showProfileUpdateNotification(getContext(), "Password");
+        }
 
+        // If a profile picture is selected, you could save it here
         if (selectedProfilePicture != null) {
             // Example: Save or process selectedProfilePicture
             Toast.makeText(getContext(), "Profile picture selected", Toast.LENGTH_SHORT).show();
@@ -151,6 +177,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private void logout() {
+        // Add your logout logic here
         new SessionManager(requireContext()).clearSession();
         startActivity(new Intent(requireContext(), AuthActivity.class));
         requireActivity().finish();

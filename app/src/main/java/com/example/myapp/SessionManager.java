@@ -8,6 +8,8 @@ public class SessionManager {
     private final SharedPreferences preferences;
     private final SharedPreferences.Editor editor;
     private final Context context;
+    private static final String IS_LOGGED_IN = "isLoggedIn";
+
 
     private static final String PREF_NAME = "user_session";
     private static final String KEY_USER_ID = "user_id";
@@ -30,9 +32,10 @@ public class SessionManager {
     }
 
     // Clear session (logout)
+
     public void clearSession() {
-        editor.remove(KEY_USER_ID);
-        editor.apply();
+        editor.clear();
+        editor.apply(); // Make sure changes are saved
     }
 
     public Context getContext() {

@@ -168,6 +168,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_ID + "=?",
                 new String[]{String.valueOf(user.getId())});
     }
+    public boolean updateUserField(int userId, String fieldName, String fieldValue) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(fieldName, fieldValue);
+
+        int rowsUpdated = db.update(TABLE_USERS, values, COLUMN_ID + " = ?", new String[]{String.valueOf(userId)});
+        db.close();
+
+        return rowsUpdated > 0;
+    }
 
     public int deleteUser(int userId) {
         SQLiteDatabase db = this.getWritableDatabase();
