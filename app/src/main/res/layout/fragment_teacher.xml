@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- RecyclerView to display the list of teachers -->
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewTeachers"
+        android:layout_width="413dp"
+        android:layout_height="500dp"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@id/buttonAddTeacher"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.862" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@drawable/gradient_background"
+        app:contentInsetEnd="0dp"
+        app:contentInsetStart="0dp"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:title="Manage teachers"
+        app:titleTextColor="@android:color/black"
+        app:titleTextStyle="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="2dp" />
+    <!-- Button to add a new teacher -->
+    <Button
+        android:id="@+id/buttonAddTeacher"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/add_teacher"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp"
+        android:backgroundTint="#00796B"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

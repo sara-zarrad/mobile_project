@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardViewTaskItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="8dp"
+    app:cardBackgroundColor="?attr/colorSurface">
+
+    <LinearLayout
+        android:background="@drawable/gradient_background"
+        android:id="@+id/layoutItemTask"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <!-- Task Icon -->
+
+        <!-- Task Details -->
+        <TextView
+            android:id="@+id/textViewTaskName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/nom_de_la_t_che"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:maxLines="1"
+            android:ellipsize="end" />
+        <TextView
+            android:id="@+id/textViewTaskdateTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/Date_And_Time"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+        <!-- Action Icon -->
+        <ImageView
+            android:id="@+id/imageViewDeleteTask"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:contentDescription="ss"
+            android:src="@drawable/ic_delete"
+            app:tint="?attr/colorError" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
+
