@@ -19,6 +19,11 @@ public class TaskNotificationHelper {
     private static final String CHANNEL_NAME = "Task Management";
     private static final int NOTIFICATION_ID = 2;
 
+    /**
+     * Creates a notification channel for devices running Android Oreo or later.
+     *
+     * @param context The application context.
+     */
     @SuppressLint("ObsoleteSdkInt")
     public static void createNotificationChannel(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -32,6 +37,12 @@ public class TaskNotificationHelper {
         }
     }
 
+    /**
+     * Checks if the app can send notifications (Android 13+ requires permission).
+     *
+     * @param context The application context.
+     * @return True if the app has permission to send notifications; false otherwise.
+     */
     public static boolean canSendNotifications(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             return ActivityCompat.checkSelfPermission(
@@ -42,7 +53,14 @@ public class TaskNotificationHelper {
         return true;
     }
 
-    public static void showTaskAddedNotification(Context context, String taskName) {
+    /**
+     * Displays a notification for a new task with a specified date and time.
+     *
+     * @param context      The application context.
+     * @param taskName     The name of the task.
+     * @param taskDateTime
+     */
+    public static void showTaskAddedNotification(Context context, String taskName, String taskDateTime) {
         if (!canSendNotifications(context)) {
             return;
         }
@@ -50,10 +68,14 @@ public class TaskNotificationHelper {
         createNotificationChannel(context);
 
         try {
+            // Format the notification message
+            String notificationMessage = "Task '" + taskName + "' is scheduled for " + taskDateTime + ".";
+
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                     .setSmallIcon(R.drawable.student) // Update with a valid icon
-                    .setContentTitle("New Task Added")
-                    .setContentText("Task '" + taskName + "' has been successfully added.")
+                    .setContentTitle("Task Reminder")
+                    .setContentText(notificationMessage)
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationMessage)) // For longer text
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setAutoCancel(true);
 

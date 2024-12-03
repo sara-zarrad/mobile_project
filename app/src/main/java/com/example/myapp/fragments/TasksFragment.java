@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,14 +14,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.myapp.MainActivity;
 import com.example.myapp.adapters.TaskAdapter;
 import com.example.myapp.database.Task;
 import com.example.myapp.databinding.FragmentTasksBinding;
 import com.example.myapp.viewmodels.TaskNotificationHelper;
 import com.example.myapp.viewmodels.TaskViewModel;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -56,25 +52,27 @@ public class TasksFragment extends Fragment {
 
         // Handle time selection
         binding.textViewTimeLabel.setOnClickListener(v -> showTimePickerDialog());
-        binding.textViewDateLabel.setOnClickListener(v -> showDatePicker());
+        binding.textViewDateLabel.setOnClickListener(v -> showDatePickerDialog());
 
         // Add a task
         binding.buttonAddTask.setOnClickListener(v -> {
             String taskName = binding.editTextTaskName.getText().toString().trim();
-            String taskDate = binding.textViewDateLabel.getText().toString().trim();
-
-            if (!taskName.isEmpty() && !taskDate.isEmpty() && selectedTime != null) {
-                Task task = new Task(taskName, taskDate, selectedTime);
+            if (!taskName.isEmpty() && selectedDate != null && selectedTime != null) {
+                String taskDateTime = selectedDate + " " + selectedTime;
+                Task task = new Task(taskName, selectedDate, selectedTime);
                 taskViewModel.insert(task);
+
+                // Clear inputs
                 binding.editTextTaskName.setText("");
                 binding.textViewDateLabel.setText("");
                 binding.textViewTimeLabel.setText("");
+                selectedDate = null;
                 selectedTime = null;
-                selectedDate= null;
+
                 Toast.makeText(getContext(), "Task added", Toast.LENGTH_SHORT).show();
 
                 // Show notification for added task
-                TaskNotificationHelper.showTaskAddedNotification(requireContext(), taskName);
+                TaskNotificationHelper.showTaskAddedNotification(requireContext(), taskName, taskDateTime);
             } else {
                 Toast.makeText(getContext(), "Task name, date, and time cannot be empty", Toast.LENGTH_SHORT).show();
             }
@@ -94,7 +92,7 @@ public class TasksFragment extends Fragment {
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(
                 getContext(),
-                (TimePicker view, int hourOfDay, int minuteOfHour) -> {
+                (view, hourOfDay, minuteOfHour) -> {
                     selectedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minuteOfHour);
                     binding.textViewTimeLabel.setText(selectedTime);
                 },
@@ -104,28 +102,26 @@ public class TasksFragment extends Fragment {
         );
         timePickerDialog.show();
     }
-    private void showDatePicker() {
-        // Get the current date
+
+    private void showDatePickerDialog() {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH); // Zero-based
+        int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                getContext(),
                 (view, selectedYear, selectedMonth, selectedDay) -> {
-                    // Adjust the month since it's zero-based
-                    selectedMonth = selectedMonth + 1;
-
-                    // Format the date as dd/MM/yyyy
+                    selectedMonth += 1; // Months are zero-based
                     selectedDate = String.format(Locale.getDefault(), "%02d/%02d/%04d", selectedDay, selectedMonth, selectedYear);
                     binding.textViewDateLabel.setText(selectedDate);
                 },
-                day, month, year
+                year,
+                month,
+                day
         );
-
         datePickerDialog.show();
     }
-
 
     @Override
     public void onDestroyView() {
