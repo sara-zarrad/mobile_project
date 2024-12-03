@@ -62,7 +62,7 @@ public class CourseNotificationHelper {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                     .setSmallIcon(R.drawable.student)
                     .setContentTitle("New Course Added")
-                    .setContentText("Course '" + courseName + "' has been successfully added.")
+                    .setContentText("New '" + courseName + "' has been added to your courses.")
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setAutoCancel(true);
 
